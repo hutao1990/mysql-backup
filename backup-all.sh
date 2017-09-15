@@ -11,21 +11,21 @@ if [ ! -d $INCRE_DIR ];then
 fi
 
 
-echo "==================rm old backup data...====================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================rm old backup data...====================="
 rm -rf $BASEDIR/* $INCRE_DIR/*
 
-echo "==================mysql start backup dir is: $BASEDIR========"
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================mysql start backup dir is: $BASEDIR========"
 innobackupex --defaults-file=$MY_CNF  --user=$USER --password=$PASSWORD $BASEDIR
-echo "==================backup end and flush cache============"
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================backup end and flush cache============"
 dir=`ls -l -t $BASEDIR |sed -n '2p'|awk '{print $9}'`
-echo "==================new backup dir is: $dir==============="
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================new backup dir is: $dir==============="
 innobackupex --defaults-file=$MY_CNF  --apply-log $BASEDIR/$dir
 
 if [ -n "$HDFS_BACKUP_ALL"  ];then
-echo "==================put data to hdfs======================"
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================put data to hdfs======================"
   source $HDFS_BACKUP_ALL
 fi
 
-echo "==================END==================================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`==================END==================================="
 
 

@@ -3,10 +3,10 @@
 
 source config.sh
 
-echo "=========================START==================================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`=========================START==================================="
 
 if [ -n $HDFS_BACKUP_RECIVER ];then
-    echo "==================get data from hdfs======================"
+    echo "`date +"%Y-%m-%d %H:%M:%S"`==================get data from hdfs======================"
    source $HDFS_BACKUP_RECIVER
 fi
 
@@ -20,11 +20,11 @@ echo "stop mysql service..."
 service mysqld stop
 
 dir=`ls -l -t $BASEDIR |sed -n '2p'|awk '{print $9}'`
-echo "========================recover mysql start...========================="
-echo "========================apply base backup dir========================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`========================recover mysql start...========================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`========================apply base backup dir========================="
 
 innobackupex --defaults-file=$MY_CNF --user=$USER --apply-log   $BASEDIR/$dir
-echo "========================start incremental dir add to base dir========="
+echo "`date +"%Y-%m-%d %H:%M:%S"`========================start incremental dir add to base dir========="
 delta_dirs=`ls -l -t -r $INCRE_DIR |awk '{print "'$INCRE_DIR/'"$9}'|sed -n '1!p'|awk BEGIN{RS=EOF}'{gsub(/\n/," ");print}'`
 
 dir_arr=($delta_dirs)
@@ -44,7 +44,7 @@ do
   ((i++))
 done
 
-echo "==========================start recover mysql========================"
+echo "`date +"%Y-%m-%d %H:%M:%S"`==========================start recover mysql========================"
 
 innobackupex --defaults-file=$MY_CNF --user=$USER --copy-back   $BASEDIR/$dir
 
@@ -52,8 +52,8 @@ datadir=`cat $MY_CNF |grep datadir|cut -d"=" -f2`
 
 chown -R mysql:mysql $datadir
 
-echo "===================start mysql server...========================"
+echo "`date +"%Y-%m-%d %H:%M:%S"`===================start mysql server...========================"
 service mysqld start
 sleep 1
 service mysqld status
-echo "===================END==============================="
+echo "`date +"%Y-%m-%d %H:%M:%S"`===================END==============================="
